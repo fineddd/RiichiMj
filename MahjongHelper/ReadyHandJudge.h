@@ -17,13 +17,8 @@ namespace MahjongHelper
         if (Melds == 0)
         {
             auto readyHandsList = ThirteenOrphansJudge();
-            if (ThirteenOrphansJudge()->Count != 0)
+            if (readyHandsList->Count != 0)
                 return readyHandsList;
-
-            auto tile = SevenPairsJudge();
-            if (tile != nullptr)
-                readyHands->Add(tile);
-            //有可能复合二杯口，故听牌后不退出（会进入case 1）
         }
 
         auto errBlocks = GetBlocks();
@@ -129,35 +124,6 @@ namespace MahjongHelper
         else for (auto i = 0; i < 13; ++i)
             tempReturn->Add(new Tile(i / 8));
         return tempReturn;
-    }
-
-    /// <summary>
-    /// 七对牌型判断
-    /// </summary>
-    /// <returns>听牌</returns>
-    inline Tile^ Opponent::SevenPairsJudge()
-    {
-        //多出来的单张
-        auto single = false;
-        //该单张牌位置
-        auto singleTile = 0;
-        //判断相同或连续的关系
-        for (auto i = 0; i < 12; ++i)
-            //如果偶数位关系对应不是相同，或奇数位不是其他关系（出现单张）
-            if (((i + (single ? 1 : 0)) % 2 ^ (GetRelation(Hands, i) > 0 ? 1 : 0)) > 0)
-            {
-                //直接异或运算无法排除龙七对
-                //如果这个错误关系是相同，则是龙七对；如果之前已经有单牌了，则不是七对子
-                if (GetRelation(Hands, i) == 0 || single)
-                    return nullptr;
-
-                single = true;
-                singleTile = Hands[i]->Val;
-            }
-
-        if (!single) //如果没查到单张
-            singleTile = Hands[12]->Val; //那单张就是最后一个
-        return new Tile(singleTile); //记听一面
     }
 
     /// <summary>

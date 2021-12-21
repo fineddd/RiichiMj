@@ -30,7 +30,7 @@ namespace MahjongHelper
 		/// </summary>
 		void ApplyClicked(Object^ sender, RoutedEventArgs^ routedEventArgs)
 		{
-			auto matches = (new Regex(L"([1-9]+[WwPpSsZz])"))->Matches(_inputTextBox->Text);
+			auto matches = (new Regex(L"([1-9]+[MmPpSsZz])"))->Matches(_inputTextBox->Text);
 			auto tempOp = new Opponent();
 			for each (auto object in matches)
 			{

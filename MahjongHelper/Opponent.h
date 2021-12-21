@@ -39,7 +39,6 @@ namespace MahjongHelper
         List<Tile^>^ ReadyHandJudge();
         System::Tuple<List<Tile^>^, Block^, Tile^>^ JointBlocks(Block^ frontBlock, Block^ followBlock);
         List<Tile^>^ ThirteenOrphansJudge();
-        Tile^ SevenPairsJudge();
         List<Block^>^ GetBlocks();
 	};
 }
