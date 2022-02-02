@@ -190,6 +190,12 @@ namespace MahjongHelper
         return errBlocks;
     }
 
+    /// <summary>
+    /// 连接两块
+    /// </summary>
+    /// <param name="frontBlock">前块</param>
+    /// <param name="followBlock">后块</param>
+    /// <returns>连接后的牌、连接后的块、用来连接的牌</returns>
     inline System::Tuple<List<Tile^>^, Block^, Tile^>^ Opponent::JointBlocks(Block^ frontBlock, Block^ followBlock)
     {
         //临时记录中间隔的牌（可能是铳牌）
