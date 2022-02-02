@@ -6,14 +6,14 @@ namespace MahjongHelper
     inline int BoolToInt(const bool _bool) { return _bool ? 1 : 0; }
 
     /// <summary>
-    /// ÌıÅÆÅĞ¶Ï£¨ÔÚÃşÅÆÇ°ÅĞ¶Ï£©
+    /// å¬ç‰Œåˆ¤æ–­ï¼ˆåœ¨æ‘¸ç‰Œå‰åˆ¤æ–­ï¼‰
     /// </summary>
-    /// <returns>ÌıµÄÅÆ</returns>
+    /// <returns>å¬çš„ç‰Œ</returns>
     inline List<Tile^>^ Opponent::ReadyHandJudge()
     {
         auto readyHands = new List<Tile^>();
 
-        //Èç¹ûÃ»ÓĞ¸±Â¶£¨ÌØÊâÅÆĞÍÅĞ¶Ï£©
+        //å¦‚æœæ²¡æœ‰å‰¯éœ²ï¼ˆç‰¹æ®Šç‰Œå‹åˆ¤æ–­ï¼‰
         if (Melds == 0)
         {
             auto readyHandsList = ThirteenOrphansJudge();
@@ -23,19 +23,18 @@ namespace MahjongHelper
 
         auto errBlocks = GetBlocks();
 
-        //²»ÍêÕûĞÍ¿éÊı
+        //ä¸å®Œæ•´å‹å—æ•°
         switch (errBlocks->Count)
         {
-            //ÓĞÒ»¿é²»ÍêÕûĞÍ£¨Ò»¿éÈ¸Ãæ²»ÍêÕûĞÍ£¨3n+1£©£©
-            //Á½±­¿Ú»áÔÚÕâÀï³öÏÖ
+            //æœ‰ä¸€å—ä¸å®Œæ•´å‹ï¼ˆä¸€å—é›€é¢ä¸å®Œæ•´å‹ï¼ˆ3n+1ï¼‰ï¼‰
+            //ä¸¤æ¯å£ä¼šåœ¨è¿™é‡Œå‡ºç°
         case 1:
         {
-            //½«´Ë²»ÍêÕûĞÍ±éÀú
+            //å°†æ­¤ä¸å®Œæ•´å‹éå†
             readyHands->AddRange(errBlocks[0]->Traversal(Hands, true));
             break;
         }
-        //ÓĞÁ½¿é²»ÍêÕûĞÍ£¨Ò»¿éÃæ×Ó²»ÍêÕûĞÍ£¨3n+2£©£¬Ò»¿éÈ¸Í·ÍêÕûĞÍ£¨3n+2£©£©
-        //ÓĞÁ½¿é²»ÍêÕûĞÍ£¨Ò»¿éÃæ×Ó²»ÍêÕûĞÍ£¨3n+2£©£¬Ò»¿éÈ¸Í·ÍêÕûĞÍ£¨3n+2£©£©
+        //æœ‰ä¸¤å—ä¸å®Œæ•´å‹ï¼ˆä¸€å—é¢å­ä¸å®Œæ•´å‹ï¼ˆ3n+2ï¼‰ï¼Œä¸€å—é›€å¤´å®Œæ•´å‹ï¼ˆ3n+2ï¼‰ï¼‰
         case 2:
         {
             if (errBlocks[1]->IgnoreEyesJudge(Hands))
@@ -44,10 +43,10 @@ namespace MahjongHelper
                 readyHands->AddRange(errBlocks[1]->Traversal(Hands, false));
             break;
         }
-        //ÓĞÈı¿é²»ÍêÕûĞÍ£¨Á½¿é°ë²»ÍêÕûĞÍ£¨3n+1£©£¬Ò»¿éÈ¸Í·ÍêÕûĞÍ£¨3n+2£©£©
+        //æœ‰ä¸‰å—ä¸å®Œæ•´å‹ï¼ˆä¸¤å—åŠä¸å®Œæ•´å‹ï¼ˆ3n+1ï¼‰ï¼Œä¸€å—é›€å¤´å®Œæ•´å‹ï¼ˆ3n+2ï¼‰ï¼‰
         case 3:
         {
-            //Èç¹û3n+2µÄ²»ÍêÕûĞÍ¼ĞÔÚÖĞ¼ä»ò²»ÊÇÈ¸Í·ÍêÕûĞÍ£¬ÔòÎŞ
+            //å¦‚æœ3n+2çš„ä¸å®Œæ•´å‹å¤¹åœ¨ä¸­é—´æˆ–ä¸æ˜¯é›€å¤´å®Œæ•´å‹ï¼Œåˆ™æ— 
             auto eyesIndex = 0;
             for each (auto eyesBlock in errBlocks)
                 if (eyesBlock->Integrity == Block::EIntegrityType::Type2)
@@ -59,12 +58,12 @@ namespace MahjongHelper
                 errBlocks[3 - eyesIndex]);
             if (joint == nullptr)
                 break;
-            //Èç¹û¸ÃÅÆ×éÍêÕû£¬Ôò¼ÇÌıÒ»Ãæ
+            //å¦‚æœè¯¥ç‰Œç»„å®Œæ•´ï¼Œåˆ™è®°å¬ä¸€é¢
             if (joint->Item2->IntegrityJudge(joint->Item1, -1))
                 readyHands->Add(joint->Item3);
             break;
         }
-        //ÓĞÁ½¿é²»ÍêÕûĞÍ£¨Ò»¿éÈ¸°ëÍêÕûĞÍ£¨3n£©£¬Ò»¿é°ë²»ÍêÕûĞÍ£¨3n+1£©£©
+        //æœ‰ä¸¤å—ä¸å®Œæ•´å‹ï¼ˆä¸€å—é›€åŠå®Œæ•´å‹ï¼ˆ3nï¼‰ï¼Œä¸€å—åŠä¸å®Œæ•´å‹ï¼ˆ3n+1ï¼‰ï¼‰
         case 4:
         {
             auto joint = errBlocks[0]->FirstLoc < errBlocks[1]->FirstLoc ?
@@ -73,7 +72,7 @@ namespace MahjongHelper
 
             if (joint == nullptr)
                 break;
-            //Èç¹û¸ÃÅÆ×éÊÇÈ¸Í·ÍêÕûĞÍ£¬Ôò¼ÇÌıÒ»Ãæ
+            //å¦‚æœè¯¥ç‰Œç»„æ˜¯é›€å¤´å®Œæ•´å‹ï¼Œåˆ™è®°å¬ä¸€é¢
             if (joint->Item2->IgnoreEyesJudge(joint->Item1))
                 readyHands->Add(joint->Item3);
 
@@ -83,65 +82,65 @@ namespace MahjongHelper
         return readyHands;
     }
     /// <summary>
-    /// ¹úÊ¿ÅÆĞÍÅĞ¶Ï
+    /// å›½å£«ç‰Œå‹åˆ¤æ–­
     /// </summary>
-    /// <returns>ÌıÅÆ</returns>
+    /// <returns>å¬ç‰Œ</returns>
     inline List<Tile^>^ Opponent::ThirteenOrphansJudge()
     {
         auto tempReturn = new List<Tile^>();
-        //ÊÇ·ñÈ±ÁËÄ³ÕÅçÛ¾ÅÅÆ£¨0»ò1£©
+        //æ˜¯å¦ç¼ºäº†æŸå¼ å¹ºä¹ç‰Œï¼ˆ0æˆ–1ï¼‰
         auto shortage = false;
-        //ÊÇ·ñ¶àÁËÄ³ÕÅçÛ¾ÅÅÆ£¨0»ò1£©
+        //æ˜¯å¦å¤šäº†æŸå¼ å¹ºä¹ç‰Œï¼ˆ0æˆ–1ï¼‰
         auto redundancy = false;
-        auto shortTile = 0; //È±µÄçÛ¾ÅÅÆ
-        //ÅĞ¶ÏÊ®ÈıÕÅçÛ¾ÅÅÆµÄÓµÓĞÇé¿ö
+        auto shortTile = 0; //ç¼ºçš„å¹ºä¹ç‰Œ
+        //åˆ¤æ–­åä¸‰å¼ å¹ºä¹ç‰Œçš„æ‹¥æœ‰æƒ…å†µ
         for (auto i = 0; i < 13; ++i)
         {
             const auto temp = (shortage ? 1 : 0) - (redundancy ? 1 : 0);
-            //Èç¹ûºÍÉÏÕÅÓ³ÉäçÛ¾ÅÅÆÒ»Ñù
+            //å¦‚æœå’Œä¸Šå¼ æ˜ å°„å¹ºä¹ç‰Œä¸€æ ·
             if (Hands[i]->Val == (i + temp - 1) / 8)
             {
-                //Èç¹ûÖ®Ç°ÒÑ¾­ÓĞÒ»¸ö¶àµÄÅÆ
+                //å¦‚æœä¹‹å‰å·²ç»æœ‰ä¸€ä¸ªå¤šçš„ç‰Œ
                 if (redundancy)
                     return tempReturn;
-                redundancy = true; //¼ÇÂ¼ÓĞ¶àÅÆ
-            } //Èç¹ûºÍÏÂÕÅÓ³ÉäçÛ¾ÅÅÆÒ»Ñù
+                redundancy = true; //è®°å½•æœ‰å¤šç‰Œ
+            } //å¦‚æœå’Œä¸‹å¼ æ˜ å°„å¹ºä¹ç‰Œä¸€æ ·
             else if (Hands[i]->Val == (i + temp + 1) / 8)
             {
-                //Èç¹ûÖ®Ç°ÒÑ¾­ÓĞÒ»¸öÈ±ÅÆÔò²»ÊÇ¹úÊ¿£¬·ñÔò¼ÇÂ¼È±ÅÆ
+                //å¦‚æœä¹‹å‰å·²ç»æœ‰ä¸€ä¸ªç¼ºç‰Œåˆ™ä¸æ˜¯å›½å£«ï¼Œå¦åˆ™è®°å½•ç¼ºç‰Œ
                 if (shortage)
                     return tempReturn;
                 shortage = true;
                 shortTile = i / 8;
-            } //ÓĞ²»ÊÇçÛ¾ÅÅÆ¼´²»·ûºÏ¹úÊ¿
+            } //æœ‰ä¸æ˜¯å¹ºä¹ç‰Œå³ä¸ç¬¦åˆå›½å£«
             else if (Hands[i]->Val != (i + temp) / 8)
                 return tempReturn;
         }
-        //ÈôÓĞ¶àÕÅ£¬¼ÇÌıÒ»Ãæ»ò¼ÇÌıÒ»Ãæ£¨ºìÖĞ£©£¨ÒòÎªºìÖĞÔÚ×îºó²»»á±»redundancy¼ÇÂ¼£©
+        //è‹¥æœ‰å¤šå¼ ï¼Œè®°å¬ä¸€é¢æˆ–è®°å¬ä¸€é¢ï¼ˆçº¢ä¸­ï¼‰ï¼ˆå› ä¸ºçº¢ä¸­åœ¨æœ€åä¸ä¼šè¢«redundancyè®°å½•ï¼‰
         if (redundancy)
             tempReturn->Add(new Tile(shortage ? shortTile : 96));
-        //Èô²»È±ÕÅÔò¼ÇÌıÊ®ÈıÃæ
+        //è‹¥ä¸ç¼ºå¼ åˆ™è®°å¬åä¸‰é¢
         else for (auto i = 0; i < 13; ++i)
             tempReturn->Add(new Tile(i / 8));
         return tempReturn;
     }
 
     /// <summary>
-    /// »ñÈ¡·Ö¿é
+    /// è·å–åˆ†å—
     /// </summary>
-    /// <returns>²»ÍêÕûµÄ¿éÊı£¨×î¶à3¸ö£©</returns>
+    /// <returns>ä¸å®Œæ•´çš„å—æ•°ï¼ˆæœ€å¤š3ä¸ªï¼‰</returns>
     inline List<Block^>^ Opponent::GetBlocks()
     {
         auto errBlocks = new List<Block^>();
         auto blocks = new List<Block^>();
         blocks->Add(new Block(0));
         for (auto i = 0; i < Hands->Count - 1; ++i)
-            //µ±¹ØÏµ²»ÊÇÏàÍ¬»òÁ¬Ğø
+            //å½“å…³ç³»ä¸æ˜¯ç›¸åŒæˆ–è¿ç»­
             if (GetRelation(Hands, i) > 1)
             {
-                //¼ÇÂ¼ÉÏÒ»¿éµÄ³¤¶È
+                //è®°å½•ä¸Šä¸€å—çš„é•¿åº¦
                 Last(blocks)->Len = i - Last(blocks)->FirstLoc + 1;
-                //É¸Ñ¡ÍêÕûĞÍLv->1
+                //ç­›é€‰å®Œæ•´å‹Lv->1
                 switch (Last(blocks)->Len % 3)
                 {
                 case 0: Last(blocks)->Integrity = Block::EIntegrityType::Type0; break;
@@ -149,16 +148,16 @@ namespace MahjongHelper
                 case 2: Last(blocks)->Integrity = Block::EIntegrityType::Type2; break;
                 default:throw new System::ArgumentOutOfRangeException();
                 }
-                //Èç¹ûÀàĞÍÊÇ²»ÍêÕûÔò¼ÇÂ¼
+                //å¦‚æœç±»å‹æ˜¯ä¸å®Œæ•´åˆ™è®°å½•
                 if (Last(blocks)->Integrity != Block::EIntegrityType::Type0)
                     errBlocks->Add(Last(blocks));
-                //Èô¿éĞòºÅ´ïµ½(6 - ¸±Â¶Êı)»òÓĞ4¸ö²»ÍêÕûĞÍÔòÎŞÌı
+                //è‹¥å—åºå·è¾¾åˆ°(6 - å‰¯éœ²æ•°)æˆ–æœ‰4ä¸ªä¸å®Œæ•´å‹åˆ™æ— å¬
                 if (blocks->Count + Melds == 6 || errBlocks->Count == 4)
                     return new List<Block^>();
-                //ÏÂÒ»¿é£¬À¨ºÅÀïÊÇ¿éÄÚÊ×ÕÅÅÆµÄĞòºÅ
+                //ä¸‹ä¸€å—ï¼Œæ‹¬å·é‡Œæ˜¯å—å†…é¦–å¼ ç‰Œçš„åºå·
                 blocks->Add(new Block(i + 1));
             }
-        //×îºóÒ»¿éµÄ¼ÇÂ¼ÎŞ·¨Ğ´½øÑ­»·
+        //æœ€åä¸€å—çš„è®°å½•æ— æ³•å†™è¿›å¾ªç¯
         {
             Last(blocks)->Len = Hands->Count - Last(blocks)->FirstLoc;
             switch (Last(blocks)->Len % 3)
@@ -173,7 +172,7 @@ namespace MahjongHelper
             if (errBlocks->Count == 4)
                 return new List<Block^>();
         }
-        //Í¨¹ıÍêÕûĞÍLv.1µÄ¿é£¬É¸Ñ¡ÍêÕûĞÍLv.2·¢ÏÖÓĞÒ»¿é²»ÍêÕû£¬ÔòÎª²»ÍêÕûĞÍ¼Ó°ë²»ÍêÕûĞÍ£¬¶àÓÚÒ»¿éÔòÎŞÌı
+        //é€šè¿‡å®Œæ•´å‹Lv.1çš„å—ï¼Œç­›é€‰å®Œæ•´å‹Lv.2å‘ç°æœ‰ä¸€å—ä¸å®Œæ•´ï¼Œåˆ™ä¸ºä¸å®Œæ•´å‹åŠ åŠä¸å®Œæ•´å‹ï¼Œå¤šäºä¸€å—åˆ™æ— å¬
         for each (auto block in blocks)
             if (block->Integrity == Block::EIntegrityType::Type0 && !block->IntegrityJudge(Hands, -1))
             {
@@ -181,7 +180,7 @@ namespace MahjongHelper
 	            {
 	            	block->Integrity = Block::EIntegrityType::TypeEx;
 	            	errBlocks->Add(block);
-	            	//ÌØÊâ±ê¼Ç
+	            	//ç‰¹æ®Šæ ‡è®°
 	            	errBlocks->Add(new Block(0));
 	            	errBlocks->Add(new Block(0));
 	            	errBlocks->Add(new Block(0));
@@ -193,19 +192,19 @@ namespace MahjongHelper
 
     inline System::Tuple<List<Tile^>^, Block^, Tile^>^ Opponent::JointBlocks(Block^ frontBlock, Block^ followBlock)
     {
-        //ÁÙÊ±¼ÇÂ¼ÖĞ¼ä¸ôµÄÅÆ£¨¿ÉÄÜÊÇï¥ÅÆ£©
+        //ä¸´æ—¶è®°å½•ä¸­é—´éš”çš„ç‰Œï¼ˆå¯èƒ½æ˜¯é“³ç‰Œï¼‰
         auto tempReadyHands = new Tile(Hands[frontBlock->LastLoc()]->Val + 1);
-        //Èç¹ûÔ­À´ÕâÁ½ÕÅÅÆÖĞ¼ä²»ÊÇ¸ôÒ»ÕÅ£¬ÔòÎŞÌı
+        //å¦‚æœåŸæ¥è¿™ä¸¤å¼ ç‰Œä¸­é—´ä¸æ˜¯éš”ä¸€å¼ ï¼Œåˆ™æ— å¬
         if (GetRelation(Hands, frontBlock->LastLoc()) != 2)
             return nullptr;
-        //ÁÙÊ±ÓÃÀ´ÅĞ¶ÏµÄÅÆ×é
+        //ä¸´æ—¶ç”¨æ¥åˆ¤æ–­çš„ç‰Œç»„
         auto jointedHands = new List<Tile^>();
-        //ÕâÁ½¿é²»ÍêÕûĞÍ×ÜÕÅÊı
+        //è¿™ä¸¤å—ä¸å®Œæ•´å‹æ€»å¼ æ•°
         auto jointedBlock = new Block(0);
         jointedBlock->Len = frontBlock->Len + 1 + followBlock->Len;
-        //¸´ÖÆ¸Ã²»ÍêÕûĞÍËùÓĞÅÆ
+        //å¤åˆ¶è¯¥ä¸å®Œæ•´å‹æ‰€æœ‰ç‰Œ
         jointedHands->AddRange(Hands->GetRange(frontBlock->FirstLoc, jointedBlock->Len - 1));
-        //²åÈëÒ»ÕÅÖĞ¼ä¸ôµÄÅÆ
+        //æ’å…¥ä¸€å¼ ä¸­é—´éš”çš„ç‰Œ
         jointedHands->Insert(frontBlock->Len, tempReadyHands);
         return new System::Tuple<List<Tile^>^, Block^, Tile^>(jointedHands, jointedBlock, tempReadyHands);
     }
