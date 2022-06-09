@@ -1,1 +1,1 @@
-# MahjongHelper
+# 立直麻将听牌检查
