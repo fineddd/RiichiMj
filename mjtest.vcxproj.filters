@@ -15,30 +15,31 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MainWindow.cpp">
+    <ClCompile Include="src\Block.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Opponent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mjtest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MainWindow.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
+    <ClInclude Include="include\Block.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Group.h">
+    <ClInclude Include="include\define.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h">
+    <ClInclude Include="include\Group.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Opponent.h">
+    <ClInclude Include="include\Opponent.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ReadyHandJudge.h">
+    <ClInclude Include="include\OpponentHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="OpponentHelper.h">
+    <ClInclude Include="include\Tile.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
