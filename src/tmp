@@ -1,0 +1,211 @@
+import {deepClone} from "vant/es/utils/deep-clone";
+import {countItemInArray} from "@/utils";
+
+export const allTiles = [11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+    31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47]
+export type tileFeature = {
+    isContactNear: boolean,
+    contactTiles: number[],
+    imagePath: string,
+}
+export const tilesFeature: tileFeature[] = [
+    {isContactNear: true, contactTiles: [11, 11 + 1], imagePath: 'o1.png'},
+    {isContactNear: true, contactTiles: [12 - 1, 12, 12 + 1], imagePath: 'o2.png'},
+    {isContactNear: true, contactTiles: [13 - 1, 13, 13 + 1], imagePath: 'o3.png'},
+    {isContactNear: true, contactTiles: [14 - 1, 14, 14 + 1], imagePath: 'o4.png'},
+    {isContactNear: true, contactTiles: [15 - 1, 15, 15 + 1], imagePath: 'o5.png'},
+    {isContactNear: true, contactTiles: [16 - 1, 16, 16 + 1], imagePath: 'o6.png'},
+    {isContactNear: true, contactTiles: [17 - 1, 17, 17 + 1], imagePath: 'o7.png'},
+    {isContactNear: true, contactTiles: [18 - 1, 18, 18 + 1], imagePath: 'o8.png'},
+    {isContactNear: true, contactTiles: [19 - 1, 19], imagePath: 'o9.png'},
+    {isContactNear: true, contactTiles: [21, 21 + 1], imagePath: 'l1.png'},
+    {isContactNear: true, contactTiles: [22 - 1, 22, 22 + 1], imagePath: 'l2.png'},
+    {isContactNear: true, contactTiles: [23 - 1, 23, 23 + 1], imagePath: 'l3.png'},
+    {isContactNear: true, contactTiles: [24 - 1, 24, 24 + 1], imagePath: 'l4.png'},
+    {isContactNear: true, contactTiles: [25 - 1, 25, 25 + 1], imagePath: 'l5.png'},
+    {isContactNear: true, contactTiles: [26 - 1, 26, 26 + 1], imagePath: 'l6.png'},
+    {isContactNear: true, contactTiles: [27 - 1, 27, 27 + 1], imagePath: 'l7.png'},
+    {isContactNear: true, contactTiles: [28 - 1, 28, 28 + 1], imagePath: 'l8.png'},
+    {isContactNear: true, contactTiles: [29 - 1, 29], imagePath: 'l9.png'},
+    {isContactNear: true, contactTiles: [31, 31 + 1], imagePath: 'w1.png'},
+    {isContactNear: true, contactTiles: [32 - 1, 32, 32 + 1], imagePath: 'w2.png'},
+    {isContactNear: true, contactTiles: [33 - 1, 33, 33 + 1], imagePath: 'w3.png'},
+    {isContactNear: true, contactTiles: [34 - 1, 34, 34 + 1], imagePath: 'w4.png'},
+    {isContactNear: true, contactTiles: [35 - 1, 35, 35 + 1], imagePath: 'w5.png'},
+    {isContactNear: true, contactTiles: [36 - 1, 36, 36 + 1], imagePath: 'w6.png'},
+    {isContactNear: true, contactTiles: [37 - 1, 37, 37 + 1], imagePath: 'w7.png'},
+    {isContactNear: true, contactTiles: [38 - 1, 38, 38 + 1], imagePath: 'w8.png'},
+    {isContactNear: true, contactTiles: [39 - 1, 39], imagePath: 'w9.png'},
+    {isContactNear: false, contactTiles: [41], imagePath: 'fe.png'},
+    {isContactNear: false, contactTiles: [42], imagePath: 'fs.png'},
+    {isContactNear: false, contactTiles: [43], imagePath: 'fw.png'},
+    {isContactNear: false, contactTiles: [44], imagePath: 'fn.png'},
+    {isContactNear: false, contactTiles: [45], imagePath: 'fz.png'},
+    {isContactNear: false, contactTiles: [46], imagePath: 'ff.png'},
+    {isContactNear: false, contactTiles: [47], imagePath: 'fb.png'},
+]
+export const getMahjongImageUrl = (tile: number) => {
+    if (allTiles.includes(tile)) {
+        return new URL(`/src/assets/service/mahjong/${tilesFeature[allTiles.indexOf(tile)].imagePath}`, import.meta.url).href
+    } else {
+        return new URL('/src/assets/service/mahjong/fk.png', import.meta.url).href
+    }
+}
+export const mahjongCalculate = (tiles: number[]): number[] => {
+    let checkThirteenYaoResult = checkThirteenYao(deepClone(tiles))
+    if (checkThirteenYaoResult.length > 0) {
+        return checkThirteenYaoResult
+    }
+    let checkSevenPairResult = checkSevenPair(deepClone(tiles))
+    if (checkSevenPairResult.length) {
+        return checkSevenPairResult
+    }
+    return checkCommon(deepClone(tiles))
+}
+
+const checkThirteenYao = (tiles: number[]): number[] => {
+    const thirteenYao: number[] = [11, 19, 21, 29, 31, 39, 41, 42, 43, 44, 45, 46, 47]
+    if (tiles.toString() == thirteenYao.toString()) {
+        return thirteenYao
+    } else {
+        return []
+    }
+}
+const checkSevenPair = (tiles: number[]): number[] => {
+    let result: number[] = []
+    if (tiles.length < 13) return result
+    tiles.push(0)
+    let pairCount = 0
+    let startPoint = 0
+    let endPoint = 1
+    let huTiles: number[] = []
+    while (endPoint < 14) {
+        if (tiles[startPoint] == tiles[endPoint]) {
+            pairCount++
+            startPoint += 2
+            endPoint += 2
+        } else {
+            huTiles.push(tiles[startPoint])
+            startPoint += 1
+            endPoint += 1
+        }
+    }
+    if (pairCount == 6 && huTiles.length == 1) {
+        result = huTiles
+    }
+    return result
+}
+const checkCommon = (tiles: number[]): number[] => {
+    let possibleHuTiles: number[] = []
+    for (let i = 0; i < tiles.length; i++) {
+        let currentTile = tiles[i]
+        let currentPossibleHuTiles = tilesFeature[allTiles.indexOf(currentTile)].contactTiles
+        for (let j = 0; j < currentPossibleHuTiles.length; j++) {
+            let currentPossibleHuTile = currentPossibleHuTiles[j]
+            if (!possibleHuTiles.includes(currentPossibleHuTile)) {
+                possibleHuTiles.push(currentPossibleHuTile)
+            }
+        }
+    }
+
+    let huTiles: number[] = []
+    for (let i = 0; i < possibleHuTiles.length; i++) {
+        let checkTiles = deepClone(tiles)
+        checkTiles.push(possibleHuTiles[i])
+        checkTiles.sort((a, b) => (a - b))
+        if (checkIsHu(checkTiles)) {
+            huTiles.push(possibleHuTiles[i])
+        }
+    }
+    return huTiles
+}
+const checkIsHu = (tiles: number[]): boolean => {
+    let possiblePairs: number[] = findPossiblePairs(tiles)
+    for (let i = 0; i < possiblePairs.length; i++) {
+        let checkTiles = deepClone(tiles)
+        checkTiles.splice(checkTiles.indexOf(possiblePairs[i]), 2)
+        if (checkTriples(checkTiles)) return true
+    }
+    return false
+}
+const findPossiblePairs = (tiles: number[]): number[] => {
+    let possiblePairs: number[] = []
+    let startPoint = 0
+    let endPoint = 1
+    while (endPoint < tiles.length) {
+        if (tiles[startPoint] == tiles[endPoint]) {
+            if (!possiblePairs.includes(tiles[startPoint])) possiblePairs.push(tiles[startPoint])
+            startPoint += 2
+            endPoint += 2
+        } else {
+            startPoint += 1
+            endPoint += 1
+        }
+    }
+    return possiblePairs
+}
+const checkTriples = (tilesWithoutPair: number[]): boolean => {
+    if (tilesWithoutPair.length == 0) return true
+    let allPossibleTriples: Array<number[]> = []
+    let allPossibleTriplesString: string[] = []
+    let unRepeatTiles = Array.from(new Set(tilesWithoutPair))
+    for (let i = 0; i < unRepeatTiles.length; i++) {
+        let possibleTriplesOfTile: Array<number[]> = findPossibleTriplesOfTile(tilesWithoutPair, unRepeatTiles[i])
+        for (let j = 0; j < possibleTriplesOfTile.length; j++) {
+            let possibleTriple = possibleTriplesOfTile[j]
+            if (!allPossibleTriplesString.includes(possibleTriple.toString())) {
+                allPossibleTriples.push(possibleTriple)
+                allPossibleTriplesString.push(possibleTriple.toString())
+            }
+        }
+    }
+    for (let i = 0; i < allPossibleTriples.length; i++) {
+        let possibleTriple = allPossibleTriples[i]
+        let checkTilesWithoutPair = deepClone(tilesWithoutPair)
+        for (let k = 0; k < 3; k++) {
+            checkTilesWithoutPair.splice(checkTilesWithoutPair.indexOf(possibleTriple[k]), 1)
+        }
+        if (checkTriples(checkTilesWithoutPair)) return true
+    }
+    return false
+}
+const findPossibleTriplesOfTile = (tilesWithoutPair: number[], tile: number): Array<number[]> => {
+    let possibleTriples: Array<number[]> = []
+    if (tilesFeature[allTiles.indexOf(tile)].isContactNear) {
+        if (tile % 10 == 1) {
+            if (tilesWithoutPair.includes(tile + 1) && tilesWithoutPair.includes(tile + 2)) {
+                possibleTriples.push([tile, tile + 1, tile + 2])
+            }
+        } else if (tile % 10 == 2) {
+            if (tilesWithoutPair.includes(tile - 1) && tilesWithoutPair.includes(tile + 1)) {
+                possibleTriples.push([tile - 1, tile, tile + 1])
+            }
+            if (tilesWithoutPair.includes(tile + 1) && tilesWithoutPair.includes(tile + 2)) {
+                possibleTriples.push([tile, tile + 1, tile + 2])
+            }
+        } else if (tile % 10 == 8) {
+            if (tilesWithoutPair.includes(tile - 1) && tilesWithoutPair.includes(tile + 1)) {
+                possibleTriples.push([tile - 1, tile, tile + 1])
+            }
+            if (tilesWithoutPair.includes(tile - 2) && tilesWithoutPair.includes(tile - 1)) {
+                possibleTriples.push([tile - 2, tile - 1, tile])
+            }
+        } else if (tile % 10 == 9) {
+            if (tilesWithoutPair.includes(tile - 2) && tilesWithoutPair.includes(tile - 1)) {
+                possibleTriples.push([tile - 2, tile - 1, tile])
+            }
+        } else {
+            if (tilesWithoutPair.includes(tile - 2) && tilesWithoutPair.includes(tile - 1)) {
+                possibleTriples.push([tile - 2, tile - 1, tile])
+            }
+            if (tilesWithoutPair.includes(tile - 1) && tilesWithoutPair.includes(tile + 1)) {
+                possibleTriples.push([tile - 1, tile, tile + 1])
+            }
+            if (tilesWithoutPair.includes(tile + 1) && tilesWithoutPair.includes(tile + 2)) {
+                possibleTriples.push([tile, tile + 1, tile + 2])
+            }
+        }
+    }
+    if (countItemInArray(tilesWithoutPair, tile) >= 3) possibleTriples.push([tile, tile, tile])
+    return possibleTriples
+}
